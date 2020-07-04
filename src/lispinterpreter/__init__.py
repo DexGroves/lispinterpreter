@@ -4,7 +4,7 @@ from typing import Iterable, Tuple, List, Union, Any, Optional
 Symbol = str
 Number = int
 Atom = Union[Symbol, Number]
-Expression = Union[Atom, List["Expression"]]
+Expression = Union[Atom, List["Expression"]]  # type: ignore
 
 
 def interpret(expr: str) -> int:
@@ -56,7 +56,7 @@ def tokenise(expr: str) -> List[str]:
 
 def gen_ast(tokens: List[str]):
     def _gen_ast(tokens: List[str], i: int = 0) -> Tuple[List[Expression], int]:
-        ast = []
+        ast: List[Expression] = []
         while i < len(tokens):
             token = tokens[i]
             if token == ")":
@@ -66,10 +66,10 @@ def gen_ast(tokens: List[str]):
                 ast.append(sub_ast)
             else:
                 if _is_numeric(token):
-                    token = int(token)
+                    token = int(token)  # type: ignore
                 ast.append(token)
                 i += 1
-        return ast
+        return ast, i
 
     return _gen_ast(tokens)[0]
 

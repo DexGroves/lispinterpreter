@@ -3,3 +3,6 @@ test:
 
 install:
 		pip install -e .
+
+lint:
+		mypy src/
