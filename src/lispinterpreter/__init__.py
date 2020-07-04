@@ -12,6 +12,7 @@ def interpret(expr: str) -> int:
 
 
 class Env:
+    """Scope for current vars. Lookups will fall back to parents before throwing."""
     def __init__(self, parent=None):
         self.vars = {}
         self.parent = parent
@@ -33,6 +34,10 @@ class Env:
 
 
 def tokenise(expr: str) -> List[str]:
+    """
+    Convert input expression to list of distinct symbols.
+    (mult 3 (add 2 3)) -> (, mult, 3, (, add, 2, 3, ), )
+    """
     def _tokenise(expr: str) -> Iterable[str]:
         try:
             i = 0
@@ -55,6 +60,10 @@ def tokenise(expr: str) -> List[str]:
 
 
 def gen_ast(tokens: List[str]):
+    """
+    Manipulate tokenised list of symbols into an abstract syntax tree.
+    (let x 2 (add, x, (mult 2, 1))) -> [let, x, 2, [add, x, [mult, 2, 1]]]
+    """
     def _gen_ast(tokens: List[str], i: int = 0) -> Tuple[List[Expression], int]:
         ast: List[Expression] = []
         while i < len(tokens):
@@ -75,6 +84,10 @@ def gen_ast(tokens: List[str]):
 
 
 def eval_ast(ast: List[Expression], env: Optional[Env] = None):
+    """
+    Evaluate abstract syntax tree recursively.
+    Each recursive level gets a new child env.
+    """
     if env is None:
         env = Env()
 
