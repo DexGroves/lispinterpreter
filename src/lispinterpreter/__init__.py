@@ -1,4 +1,10 @@
-from typing import Iterable
+from typing import Iterable, Tuple, List, Union
+
+
+Symbol = str
+Number = Union[int, float]
+Atom = Union[Symbol, Number]
+Expression = Union[Atom, List]
 
 
 def tokenise(expr: str) -> Iterable[str]:
@@ -15,3 +21,19 @@ def tokenise(expr: str) -> Iterable[str]:
                 term.append(expr[i])
                 i += 1
             yield "".join(term)
+
+
+def gen_ast(tokens: Iterable[str], i: int = 0) -> Tuple[List[Expression], int]:
+    ast = []
+    while i < len(tokens):
+        # print(i, tokens[i], ast)
+        token = tokens[i]
+        if token == ")":
+            return ast, i + 1
+        elif token == "(":
+            sub_ast, i = gen_ast(tokens, i + 1)
+            ast.append(sub_ast)
+        else:
+            ast.append(token)
+            i += 1
+    return ast
